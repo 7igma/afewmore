@@ -40,16 +40,16 @@ int main(int argc, char** argv)
 
 	if (argc < 2)
 	{
-		printf("Please provide an instance id");
+		printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
 		return 0;
 	}
 	if ((i = contains("-h", argv)) != -1)
 	{
 		printf("Provide an EC2 instance id as an argument to duplicate it.\n");
 		printf("Options:\n");
-		printf("-d dir: copy the contents in this directory from the source instance to the new instances");
+		printf("-d dir: copy the contents in this directory from the source instance to the new instances\n");
 		printf("-n num: specify the number of new instances to create (default = 10) \n");
-		printf("-v: provide verbose output");
+		printf("-v: provide verbose output\n");
 		return 0;
 	}
 	inst_id = argv[1];
