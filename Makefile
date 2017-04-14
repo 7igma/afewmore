@@ -14,6 +14,3 @@ clean:
 	-$(RM) *.o
 	-$(RM) *.swp
 	-$(RM) *.core
-
-fclean: clean
-	-$(RM) $(LIBPATH)/$(NAME)
