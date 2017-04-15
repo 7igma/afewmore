@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 /* prints the given array of strings on a single line seperated by whitespace */
 void printArray(char** arr)
@@ -40,9 +41,29 @@ int main(int argc, char** argv)
 	char* inst_id;
 	char** new_instances; //array of all instances
 	char* curr_instance; //id of the most recently created instance
-	char* curr_dns; //dns of the most recently created instance
+	char* curr_dns;
+	char ip[80]= "54.90.120.43"; //dns of the most recently created instance
+	char* token;
+	const char s[2] = ".";
 
-	if (argc < 2)
+	strcpy(curr_dns, "ec2");
+	printf("%s\n", ip);
+	printf("%s\n", curr_dns);
+	token = strtok(ip, s);
+	printf("%s\n", token);
+  while( token != NULL ) 
+  {
+		strcat(curr_dns, "-");
+		strcat(curr_dns, token);
+		printf("%s\n", curr_dns);
+  
+  	token = strtok(NULL, s);
+		//printf("%s\n", token);
+  }
+	strcat(curr_dns, ".compute-1.amazonaws.com");
+	printf("%s\n", curr_dns);
+
+	/*if (argc < 2)
 	{
 		printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
 		return 0;
@@ -74,11 +95,11 @@ int main(int argc, char** argv)
 			return 0;
 		}
 		/* TODO: check that the given argument is in fact a number value */
-		/* currently assumes that the user will provide a number after -n */
+		/* currently assumes that the user will provide a number after -n /
 		count = atoi(argv[i+1]);
 	}
 
-	/* if the key does not already exist, create it and configure the security group*/
+	/* if the key does not already exist, create it and configure the security group/
 	if (!(access("key.pem", F_OK) != -1))
 	{
 		system("aws ec2 create-key-pair --key-name key --query 'KeyMaterial' --output text > key.pem");
@@ -104,6 +125,18 @@ int main(int argc, char** argv)
       token = strtok(NULL, ".");
    }
 	 strcat(curr_dns, ".compute-1.amazonaws.com") 
+
+	 strcpy(curr_dns, "ec2");
+		token = strtok(ip, s);
+		while( token != NULL ) 
+		{
+			strcat(curr_dns, "-");
+			strcat(curr_dns, token);
+		
+			token = strtok(NULL, s);
+		}
+		strcat(curr_dns, ".compute-1.amazonaws.com");
+		printf("%s\n", curr_dns);
 
 	 //put it to sleep while we wait for the new instance to initialize
 	 sleep(number)
