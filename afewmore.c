@@ -41,27 +41,10 @@ int main(int argc, char** argv)
 	char* inst_id;
 	char** new_instances; //array of all instances
 	char* curr_instance; //id of the most recently created instance
-	char* curr_dns;
-	char ip[80]= "54.90.120.43"; //dns of the most recently created instance
+	char* curr_dns; //dns of the most recently created instance
 	char* token;
 	const char s[2] = ".";
-
-	strcpy(curr_dns, "ec2");
-	printf("%s\n", ip);
-	printf("%s\n", curr_dns);
-	token = strtok(ip, s);
-	printf("%s\n", token);
-  while( token != NULL ) 
-  {
-		strcat(curr_dns, "-");
-		strcat(curr_dns, token);
-		printf("%s\n", curr_dns);
-  
-  	token = strtok(NULL, s);
-		//printf("%s\n", token);
-  }
-	strcat(curr_dns, ".compute-1.amazonaws.com");
-	printf("%s\n", curr_dns);
+	//char ip[80]= "54.90.120.43";
 
 	/*if (argc < 2)
 	{
@@ -116,16 +99,6 @@ int main(int argc, char** argv)
 		//caputure all public DNS and transform it
 		system("aws ec2 run-instances ID --query \"Reservations[*].Instances[*].PublicIpAddress\"");
 		
-		strcpy(curr_dns, "ec2-");
-		token = strtok(ip, ".");
-   	while( token != NULL ) 
-   	{
-			 strcat(curr_dns, token)
-    
-      token = strtok(NULL, ".");
-   }
-	 strcat(curr_dns, ".compute-1.amazonaws.com") 
-
 	 strcpy(curr_dns, "ec2");
 		token = strtok(ip, s);
 		while( token != NULL ) 
