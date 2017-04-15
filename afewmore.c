@@ -36,7 +36,11 @@ int main(int argc, char** argv)
 	int i;
 	char* dir = NULL; //the directory to copy from
 	int count = NULL; //the number of instances to create
+									//since the default is 10, I think it should initially be set to 10
 	char* inst_id;
+	char** new_instances; //array of all instances
+	char* curr_instance; //id of the most recently created instance
+	char* curr_dns; //dns of the most recently created instance
 
 	if (argc < 2)
 	{
@@ -79,6 +83,32 @@ int main(int argc, char** argv)
 	{
 		system("aws ec2 create-key-pair --key-name key --query 'KeyMaterial' --output text > key.pem");
 		system("aws ec2 create-security-group --group-name sg --description \"default\"");
+		//system("chmod 400 key.pem")
 	}
+
+	/*create new instances
+	for(int i=0; i<count; i++)
+	{
+		//creates a new instance and outputs its id
+		//how does the output look? is it still printed to command line? how to save it to array?
+		system("aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-db97cfa4 --count 1 --instance-type t1.micro --key-name key --query 'Instances[0].InstanceId'");
+		//caputure all public DNS and transform it
+		system("aws ec2 run-instances ID --query \"Reservations[*].Instances[*].PublicIpAddress\"");
+		
+		strcpy(curr_dns, "ec2-");
+		token = strtok(ip, ".");
+   	while( token != NULL ) 
+   	{
+			 strcat(curr_dns, token)
+    
+      token = strtok(NULL, ".");
+   }
+	 strcat(curr_dns, ".compute-1.amazonaws.com") 
+
+	 //put it to sleep while we wait for the new instance to initialize
+	 sleep(number)
+	 system("scp -i key.pem -r DIR ubuntu@CURR_DNS") 
+	}
+	*/
 	return 0;
 }
