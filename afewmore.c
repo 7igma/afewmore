@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 	int i;
 	int verbose = 0;
 	char dir[200]; //the directory to copy from
-	int count = 1; //FOR THE SAKE OF TESTING
+	int count = 10; //FOR THE SAKE OF TESTING
 									//the number of instances to create
 									//since the default is 10, I think it should initially be set to 10
 	char* inst_id;
