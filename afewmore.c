@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			strcat(all_instances, " ");
+			//strcat(all_instances, " ");
 			strcat(all_instances, curr_instance);
 		}
 		printf("%s", all_instances);
@@ -234,7 +234,7 @@ int main(int argc, char** argv)
 		pclose(fp);
 	}
 
-	printArray(my_str2vect(all_instances));
+	printf("%s", all_instances);
 
 	//char ip[80]= "54.90.120.43";
 
