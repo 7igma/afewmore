@@ -6,6 +6,71 @@
 #include <unistd.h>
 #include <string.h>
 
+//turns a string into an array of strings deliminated by spaces 
+char** my_str2vect(char* arr)
+{
+	char** vect;
+	int i, j, k, num_words, wordlen;
+	i = 0;
+	num_words=0;
+
+
+	if(arr == NULL || arr[i] == '\0')
+		return NULL;
+	/*Finds the number of words in the string*/
+	while(arr[i] != '\0')
+	{
+		if(arr[i] == ' ' && (arr[i+1] != ' ' || arr[i+1] == '\0'))
+		{
+			num_words++;
+		}
+		i++;
+	}
+
+	/*Allocates space for each word*/
+	vect = (char**) malloc(sizeof(char*) * (num_words + 1));
+
+	/*Finds the number of letters in each word and allocates space for it*/
+	i=0;
+	j=0;
+	while(arr[i] != '\0')
+	{
+		if(arr[i] == ' ' && arr[i+1] != ' ')
+		{
+			vect[j] = (char*)malloc(sizeof(char) * wordlen);
+			wordlen = 0;
+			j++;
+		}
+
+		if(arr[i] != ' ')
+			wordlen++;
+		i++;
+	}
+	vect[j] = (char*)malloc(sizeof(char) * wordlen);
+
+	 i=0;
+	 j=0;
+	 k=0;
+	/*Adds the letters to the vector*/
+	while(arr[i] != '\0')
+	{
+		if(arr[i] == ' ' && arr[i+1] != ' ')
+		{
+			j++;
+			k = 0;
+		}
+		if(arr[i] != ' ')
+		{
+			vect[j][k] = arr[i];
+			k++;
+		}
+		i++;
+	}
+
+	vect[j+1] = (char*)NULL;
+	return vect;
+}
+
 /* prints the given array of strings on a single line seperated by whitespace */
 void printArray(char** arr)
 {
@@ -36,13 +101,18 @@ int main(int argc, char** argv)
 {
 	int i;
 	char* dir = NULL; //the directory to copy from
-	int count = NULL; //the number of instances to create
+	int count = 2; //FOR THE SAKE OF TESTING
+									//the number of instances to create
 									//since the default is 10, I think it should initially be set to 10
 	char* inst_id;
-	char** new_instances; //array of all instances
-	char* curr_instance = malloc(sizeof(char) * 1035); //id of the most recently created instance
+	char** insts;
+	char** dnss;
+	char* all_instances= malloc(sizeof(char) * 1028); //array of all instances
+	char* all_dns= malloc(sizeof(char) * 1028);
+	char* curr_instance = malloc(sizeof(char) * 100); //id of the most recently created instance
 	char* ip= malloc(sizeof(char) * 100); //dns of the most recently created instance
 	char* curr_dns= malloc(sizeof(char) * 100);
+
 	char* token;
 	const char s[2] = ".";
 
@@ -54,10 +124,12 @@ int main(int argc, char** argv)
 	char command2[200];
 	char command3[200];
 
-	printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
-	sprintf(command1, "aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-db97cfa4 --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
-	printf("%s\n", command1);
-	fp = popen(command1, "r");
+	//printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
+	for(i=0; i< count; i++)
+	{
+		sprintf(command1, "aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-a090b6dc --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+		printf("%s\n", command1);
+		fp = popen(command1, "r");
 		if (fp == NULL)
 		{
 			printf("Error opening pipe\n");
@@ -73,6 +145,16 @@ int main(int argc, char** argv)
 			//printf("%s", output);
 		}
 		printf("%s", curr_instance);
+		if(i==0)
+		{
+			strcpy(all_instances, curr_instance);
+		}
+		else
+		{
+			strcat(all_instances, " ");
+			strcat(all_instances, curr_instance);
+		}
+		printf("%s", all_instances);
 		//strcpy(curr_instance, output);
 		//strcpy(output, "");
 		//printf("%s", curr_instance);
@@ -116,11 +198,28 @@ int main(int argc, char** argv)
 		}
 		strcat(curr_dns, ".compute-1.amazonaws.com");
 		printf("%s\n", curr_dns);
+		if(i==0)
+		{
+			strcpy(all_dns, curr_dns);
+		}
+		else
+		{
+			strcat(all_dns, " ");
+			strcat(all_dns, curr_dns);
+		}
+	}
+	printf("%s\n", all_dns);
 
-		sleep(20);
+	insts = my_str2vect(all_instances);
+	dnss = my_str2vect(all_dns);
 
-		sprintf(command3, "scp -i key.pem -r ../data ubuntu@%s", curr_dns);
-		fp = popen(command3, "r");
+	sleep(120);
+
+	for(i=0; i<count; i++)
+	{
+		printf("%s\n", dnss[i]);
+		sprintf(command3, "scp -i ../key.pem -r ../data ubuntu@%s:", dnss[i]);
+		fp = popen(command3, "w");
 		if (fp == NULL)
 		{
 			printf("Error opening pipe\n");
@@ -128,13 +227,10 @@ int main(int argc, char** argv)
 		}
 		//memset(output, '\0', sizeof(path));
 		//printf("1");
-		while (fgets(path, sizeof(path)-1, fp) != NULL)
-		{
-			//printf("2");
-			printf("%s", path);
-			//printf("%s", output);
-		}
+		sleep(3);
+		fwrite("yes\n", 1, 4, fp);
 		pclose(fp);
+	}
 
 	//char ip[80]= "54.90.120.43";
 
