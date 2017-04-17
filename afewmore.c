@@ -227,8 +227,8 @@ int main(int argc, char** argv)
 		}
 		//memset(output, '\0', sizeof(path));
 		//printf("1");
-		sleep(3);
-		fwrite("yes\n", 1, 4, fp);
+		//sleep(3);
+		//fwrite("yes\n", 1, 4, fp);
 		pclose(fp);
 	}
 
