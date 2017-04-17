@@ -171,9 +171,10 @@ int main(int argc, char** argv)
 	//strcpy(command1, "aws ec2 run-instances --image-id am");
 	//strcat(command1, inst_id);
 	//strcat(command1, " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
-	sprintf(command1, "aws ec2 run-instances --image-id am");
-	sprintf(command1 + strlen(command1), inst_id);
-	sprintf(command1 + strlen(command1), " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	//sprintf(command1, "aws ec2 run-instances --image-id am");
+	//sprintf(command1 + strlen(command1), inst_id);
+	//sprintf(command1 + strlen(command1), " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	sprintf(command1, "aws ec2 run-instances --image-id am%s --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'", inst_id);
 	//printf("%s\n", command1);
 	
 	for(i=0; i< count; i++)
