@@ -127,6 +127,7 @@ int main(int argc, char** argv)
 	//printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
 	for(i=0; i< count; i++)
 	{
+		//HARDCODED: ami, security group, key
 		sprintf(command1, "aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-a090b6dc --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
 		printf("%s\n", command1);
 		fp = popen(command1, "r");
@@ -218,6 +219,7 @@ int main(int argc, char** argv)
 	for(i=0; i<count; i++)
 	{
 		printf("%s\n", dnss[i]);
+		//HARDCODED: key(and key directory), dir to send(and dir directory)
 		sprintf(command3, "scp -i ../key.pem -r ../data ubuntu@%s:", dnss[i]);
 		fp = popen(command3, "w");
 		if (fp == NULL)
@@ -231,6 +233,8 @@ int main(int argc, char** argv)
 		//fwrite("yes\n", 1, 4, fp);
 		pclose(fp);
 	}
+
+	printArray(my_str2vect(all_instances));
 
 	//char ip[80]= "54.90.120.43";
 
