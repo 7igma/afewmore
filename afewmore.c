@@ -168,9 +168,13 @@ int main(int argc, char** argv)
 		//system("chmod 400 key.pem")
 	}
 	
-	strcpy(command1, "aws ec2 run-instances --image-id am");
-	strcat(command1, inst_id);
-	strcat(command1, " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	//strcpy(command1, "aws ec2 run-instances --image-id am");
+	//strcat(command1, inst_id);
+	//strcat(command1, " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	sprintf(command1, "aws ec2 run-instances --image-id am");
+	sprintf(command1 + strlen(command1), inst_id);
+	sprintf(command1 + strlen(command1), " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	//printf("%s\n", command1);
 	
 	for(i=0; i< count; i++)
 	{
@@ -280,6 +284,6 @@ int main(int argc, char** argv)
 	}
 
 	printf("%s", all_instances);
-
+	
 	return 0;
 }
