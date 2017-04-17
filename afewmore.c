@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 {
 	int i;
 	char* dir = NULL; //the directory to copy from
-	int count = 2; //FOR THE SAKE OF TESTING
+	int count = 1; //FOR THE SAKE OF TESTING
 									//the number of instances to create
 									//since the default is 10, I think it should initially be set to 10
 	char* inst_id;
@@ -264,13 +264,15 @@ int main(int argc, char** argv)
 	insts = my_str2vect(all_instances);
 	dnss = my_str2vect(all_dns);
 
+	printf("Waiting for instances to start up...\n");
+
 	sleep(120);
 
 	for(i=0; i<count; i++)
 	{
 		printf("%s\n", dnss[i]);
 		//HARDCODED: key(and key directory), dir to send(and dir directory)
-		sprintf(command3, "scp -i ../key.pem -r ../data ubuntu@%s:", dnss[i]);
+		sprintf(command3, "scp -i key.pem -r ../data ubuntu@%s:", dnss[i]);
 		fp = popen(command3, "w");
 		if (fp == NULL)
 		{
