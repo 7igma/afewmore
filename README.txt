@@ -3,6 +3,12 @@ Steven Nunes
 
 Bryana Atkinson
 
+Commentary of Teamwork:
+	-We originally split up work so that Steve was parsing the original command and starting the instance, while I would 
+	figure out how to transfer the directory. Parsing the command ended up being harder than we thought and sending the 
+	directory ended up being easier than we thought, so we changed it. Steve worked on parsing the original command and 
+	any other necessary features/problems that came up. I worked on creating the instances, finding their DNS, and 
+	transferring the directory.
 Commentary on Program:
 	-Our program was written using C. We chose this language because it was the only language that we had experience in using 
 	to execute commands programatically. We ended up doing a lot more string parsing and manipulation than we originally 
