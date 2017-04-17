@@ -40,10 +40,102 @@ int main(int argc, char** argv)
 									//since the default is 10, I think it should initially be set to 10
 	char* inst_id;
 	char** new_instances; //array of all instances
-	char* curr_instance; //id of the most recently created instance
-	char* curr_dns; //dns of the most recently created instance
+	char* curr_instance = malloc(sizeof(char) * 1035); //id of the most recently created instance
+	char* ip= malloc(sizeof(char) * 100); //dns of the most recently created instance
+	char* curr_dns= malloc(sizeof(char) * 100);
 	char* token;
 	const char s[2] = ".";
+
+	FILE* fp;
+	char path[1035];
+	//char* output= malloc(sizeof(char) * 1035);
+
+	char command1[200];
+	char command2[200];
+	char command3[200];
+
+	printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
+	sprintf(command1, "aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-db97cfa4 --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	printf("%s\n", command1);
+	fp = popen(command1, "r");
+		if (fp == NULL)
+		{
+			printf("Error opening pipe\n");
+			exit(1);
+		}
+		//memset(output, '\0', sizeof(path));
+		//printf("1");
+		while (fgets(path, sizeof(path)-1, fp) != NULL)
+		{
+			//printf("2");
+			//printf("%s", path);
+			strcpy(curr_instance, path);
+			//printf("%s", output);
+		}
+		printf("%s", curr_instance);
+		//strcpy(curr_instance, output);
+		//strcpy(output, "");
+		//printf("%s", curr_instance);
+		// close
+		pclose(fp);
+
+		path[0]='\0';
+		curr_instance[strlen(curr_instance) - 1] = '\0';
+
+		sprintf(command2, "aws ec2 describe-instances --instance-ids %s --query \'Reservations[0].Instances[0].PublicIpAddress\'", curr_instance);
+		printf("%s\n", command2);
+		fp = popen(command2, "r");
+		if (fp == NULL)
+		{
+			printf("Error opening pipe\n");
+			exit(1);
+		}
+		//memset(output, '\0', sizeof(path));
+		//printf("1");
+		while (fgets(path, sizeof(path)-1, fp) != NULL)
+		{
+			//printf("2");
+			//printf("%s", path);
+			strcpy(ip, path);
+			//printf("%s", output);
+		}
+		printf("%s", ip);
+		pclose(fp);
+
+		path[0]='\0';
+		ip[strlen(ip) - 1] = '\0';
+
+		strcpy(curr_dns, "ec2");
+		token = strtok(ip, s);
+		while( token != NULL ) 
+		{
+			strcat(curr_dns, "-");
+			strcat(curr_dns, token);
+		
+			token = strtok(NULL, s);
+		}
+		strcat(curr_dns, ".compute-1.amazonaws.com");
+		printf("%s\n", curr_dns);
+
+		sleep(20);
+
+		sprintf(command3, "scp -i key.pem -r ../data ubuntu@%s", curr_dns);
+		fp = popen(command3, "r");
+		if (fp == NULL)
+		{
+			printf("Error opening pipe\n");
+			exit(1);
+		}
+		//memset(output, '\0', sizeof(path));
+		//printf("1");
+		while (fgets(path, sizeof(path)-1, fp) != NULL)
+		{
+			//printf("2");
+			printf("%s", path);
+			//printf("%s", output);
+		}
+		pclose(fp);
+
 	//char ip[80]= "54.90.120.43";
 
 	/*if (argc < 2)
