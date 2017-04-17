@@ -124,11 +124,56 @@ int main(int argc, char** argv)
 	char command2[200];
 	char command3[200];
 
-	//printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
+	if (argc < 2)
+	{
+		printf("Please provide an EC2 instance id to launch. Example: ./afewmore i-1234567\n");
+		return 0;
+	}
+	if ((i = contains("-h", argv)) != -1)
+	{
+		printf("Provide an EC2 instance id as an argument to duplicate it.\n");
+		printf("Options:\n");
+		printf("-d dir: copy the contents in this directory from the source instance to the new instances\n");
+		printf("-n num: specify the number of new instances to create (default = 10) \n");
+		printf("-v: provide verbose output\n");
+		return 0;
+	}
+	inst_id = argv[1];
+	if ((i = contains("-d", argv)) != -1)
+	{
+		if (argv[i+1] == NULL)
+		{
+			printf("No directory specified after -d\n");
+			return 0;
+		}
+		dir = argv[i+1];
+	}
+	if ((i = contains("-n", argv)) != -1)
+	{
+		if (argv[i+1] == NULL)
+		{
+			printf("No value specified after -n\n");
+			return 0;
+		}
+		/* TODO: check that the given argument is in fact a number value */
+		/* currently assumes that the user will provide a number after -n */
+		count = atoi(argv[i+1]);
+	}
+
+	/* if the key does not already exist, create it and configure the security group */
+	if (!(access("key.pem", F_OK) != -1))
+	{
+		system("aws ec2 create-key-pair --key-name key --query 'KeyMaterial' --output text > key.pem");
+		system("aws ec2 create-security-group --group-name sg --description \"default\"");
+		//system("chmod 400 key.pem")
+	}
+	
+	strcpy(command1, "aws ec2 run-instances --image-id am");
+	strcat(command1, inst_id);
+	strcat(command1, " --security-groups sg --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
+	
 	for(i=0; i< count; i++)
 	{
-		//HARDCODED: ami, security group, key
-		sprintf(command1, "aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-a090b6dc --count 1 --instance-type t1.micro --key-name key --query \'Instances[0].InstanceId\'");
 		printf("%s\n", command1);
 		fp = popen(command1, "r");
 		if (fp == NULL)
@@ -236,77 +281,5 @@ int main(int argc, char** argv)
 
 	printf("%s", all_instances);
 
-	//char ip[80]= "54.90.120.43";
-
-	/*if (argc < 2)
-	{
-		printf("Please provide an EC2 instance id to launch. Example: ./afewmore ami-1234567\n");
-		return 0;
-	}
-	if ((i = contains("-h", argv)) != -1)
-	{
-		printf("Provide an EC2 instance id as an argument to duplicate it.\n");
-		printf("Options:\n");
-		printf("-d dir: copy the contents in this directory from the source instance to the new instances\n");
-		printf("-n num: specify the number of new instances to create (default = 10) \n");
-		printf("-v: provide verbose output\n");
-		return 0;
-	}
-	inst_id = argv[1];
-	if ((i = contains("-d", argv)) != -1)
-	{
-		if (argv[i+1] == NULL)
-		{
-			printf("No directory specified after -d\n");
-			return 0;
-		}
-		dir = argv[i+1];
-	}
-	if ((i = contains("-n", argv)) != -1)
-	{
-		if (argv[i+1] == NULL)
-		{
-			printf("No value specified after -n\n");
-			return 0;
-		}
-		/* TODO: check that the given argument is in fact a number value */
-		/* currently assumes that the user will provide a number after -n /
-		count = atoi(argv[i+1]);
-	}
-
-	/* if the key does not already exist, create it and configure the security group/
-	if (!(access("key.pem", F_OK) != -1))
-	{
-		system("aws ec2 create-key-pair --key-name key --query 'KeyMaterial' --output text > key.pem");
-		system("aws ec2 create-security-group --group-name sg --description \"default\"");
-		//system("chmod 400 key.pem")
-	}
-
-	/*create new instances
-	for(int i=0; i<count; i++)
-	{
-		//creates a new instance and outputs its id
-		//how does the output look? is it still printed to command line? how to save it to array?
-		system("aws ec2 run-instances --image-id ami-6de0dd04 --security-group-ids sg-db97cfa4 --count 1 --instance-type t1.micro --key-name key --query 'Instances[0].InstanceId'");
-		//caputure all public DNS and transform it
-		system("aws ec2 run-instances ID --query \"Reservations[*].Instances[*].PublicIpAddress\"");
-		
-	 strcpy(curr_dns, "ec2");
-		token = strtok(ip, s);
-		while( token != NULL ) 
-		{
-			strcat(curr_dns, "-");
-			strcat(curr_dns, token);
-		
-			token = strtok(NULL, s);
-		}
-		strcat(curr_dns, ".compute-1.amazonaws.com");
-		printf("%s\n", curr_dns);
-
-	 //put it to sleep while we wait for the new instance to initialize
-	 sleep(number)
-	 system("scp -i key.pem -r DIR ubuntu@CURR_DNS") 
-	}
-	*/
 	return 0;
 }
