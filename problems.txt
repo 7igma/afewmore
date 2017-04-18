@@ -1,9 +1,0 @@
-DELETE THIS FILE BEFORE SUBMITTING
-
-1. Program asks you if you're sure since the host is unknown and you have to manually type yes
-2. AMI, security group, key, directory, etc. are all hardcoded
-3. Security group is created without checking if one by that name already exists - might be a problem
-4. Security group ID is not stored
-5. Security group might need additional configuration to allow inbound traffic
-6. Directory is sent to new instance's home instead of to the exact same place as the first instance
-7. Count is currently set to 2 - change to 10 which is default
